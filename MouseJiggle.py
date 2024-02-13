@@ -21,7 +21,7 @@ class Jiggler:
         while (time.time() - start_time) < duration and self.running:
             pyautogui.move(x_distance, y_distance)
             pyautogui.move(-x_distance, -y_distance)
-            time.sleep(5)
+            time.sleep(1)
             self.elapsed_time = time.time() - start_time
 
     def stop_jiggle(self):
