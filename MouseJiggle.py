@@ -23,11 +23,14 @@ class Jiggler:
             pyautogui.move(-x_distance, -y_distance)
             time.sleep(1)
             self.elapsed_time = time.time() - start_time
+        root.after(0, self.stop_jiggle) # schedule stop_jiggle to run on the main thread after the loop ends
+        
 
     def stop_jiggle(self):
         self.running = False
         logo_label.config(image=resized_logo_image)  # change the logo back to the original
         logo_label.image = resized_logo_image  # keep a reference to the image
+        progress_var.set(0)  # reset the progress bar
 
 def update_progress():
     if jiggler.running:
