@@ -4,56 +4,87 @@ import tkinter as tk
 from tkinter import ttk
 from threading import Thread
 
-class Jiggler:
-    def __init__(self):
+class Jiggler:  
+    def __init__(self):  
         self.running = False
+        self.paused = False
         self.elapsed_time = 0
         self.duration = 0
+        self.clicking = False
+        self.last_position = pyautogui.position()
 
-    def start_jiggle(self, duration, x_distance, y_distance):
+    def toggle_click(self):  
+        self.clicking = not self.clicking
+        click_button.config(text="Clicker On" if self.clicking else "Clicker Off")  
+
+    def toggle_pause(self):  
+        self.paused = not self.paused
+        pause_button.config(text="Resume" if self.paused else "Pause")
+
+    def start_jiggle(self, duration, x_distance, y_distance, clicks_per_minute):  
         self.running = True
         self.duration = duration
-        logo_image_running = tk.PhotoImage(file='MouseJigglerLogo2.png')  # load the second logo
-        resized_logo_image_running = logo_image_running.subsample(2, 2)  # resize the running logo
-        logo_label.config(image=resized_logo_image_running)  # change the logo
-        logo_label.image = resized_logo_image_running  # keep a reference to the image
+        logo_image_running = tk.PhotoImage(file='MouseJigglerLogo2.png')
+        resized_logo_image_running = logo_image_running.subsample(2, 2)
+        logo_label.config(image=resized_logo_image_running)
+        logo_label.image = resized_logo_image_running
         start_time = time.time()
-        while (time.time() - start_time) < duration and self.running:
-            pyautogui.move(x_distance, y_distance)
-            pyautogui.move(-x_distance, -y_distance)
-            time.sleep(1)
-            self.elapsed_time = time.time() - start_time
-        root.after(0, self.stop_jiggle) # schedule stop_jiggle to run on the main thread after the loop ends
-        
+        click_interval = 60 / clicks_per_minute  
+        last_click_time = time.time()
+        while (time.time() - start_time) < duration and self.running: 
+            if not self.paused:  
+                pyautogui.move(x_distance, y_distance)
+                if self.clicking and time.time() - last_click_time >= click_interval:
+                    pyautogui.click()
+                    last_click_time = time.time()
+                pyautogui.move(-x_distance, -y_distance)
+                if self.clicking and time.time() - last_click_time >= click_interval:
+                    pyautogui.click()
+                    last_click_time = time.time()
+            time.sleep(1)  
+            self.elapsed_time = time.time() - start_time  
+            current_position = pyautogui.position()  
+            if current_position != self.last_position:  
+                time.sleep(5)
+                self.last_position = current_position  
+        root.after(0, self.stop_jiggle)  
 
-    def stop_jiggle(self):
+    def stop_jiggle(self):  
         self.running = False
-        logo_label.config(image=resized_logo_image)  # change the logo back to the original
-        logo_label.image = resized_logo_image  # keep a reference to the image
-        progress_var.set(0)  # reset the progress bar
+        logo_label.config(image=resized_logo_image)
+        logo_label.image = resized_logo_image
+        progress_var.set(0)
 
-def update_progress():
-    if jiggler.running:
-        progress_var.set(int((jiggler.elapsed_time / jiggler.duration) * 100))  # update progress bar
-    root.after(1000, update_progress)  # schedule this function to run again after 1 second
+def update_progress():  
+    if jiggler.running and not jiggler.paused:
+        progress_var.set(int((jiggler.elapsed_time / jiggler.duration) * 100))
+    root.after(1000, update_progress)
 
-def start_jiggler(event=None):  # add event parameter to handle key press event
-    try:
-        duration = int(duration_entry.get()) * 60  # convert minutes to seconds
+def start_jiggler(event=None):  
+    try:  
+        duration = int(duration_entry.get()) * 60
         x_distance = int(x_distance_entry.get())
         y_distance = int(y_distance_entry.get())
-        Thread(target=jiggler.start_jiggle, args=(duration, x_distance, y_distance)).start()
-    except ValueError:
+        clicks_per_minute = int(clicks_entry.get())
+        if clicks_per_minute <= 0:
+            raise ValueError
+        Thread(target=jiggler.start_jiggle, args=(duration, x_distance, y_distance, clicks_per_minute)).start()
+    except ValueError:  
         error_label.config(text="Invalid input. Please enter a valid number.")
-        # Clear the invalid input
         duration_entry.delete(0, tk.END)
         x_distance_entry.delete(0, tk.END)
         y_distance_entry.delete(0, tk.END)
-        # Schedule the error message to be cleared after 5 seconds
+        clicks_entry.delete(0, tk.END)
         root.after(5000, lambda: error_label.config(text=""))
 
-def stop_jiggler():
+def stop_jiggler():  
     jiggler.stop_jiggle()
+
+def toggle_click():  
+    jiggler.toggle_click()
+
+def toggle_pause():  
+    jiggler.toggle_pause()
 
 jiggler = Jiggler()
 
@@ -64,48 +95,73 @@ root.title("Mouse Jiggler")
 root.iconbitmap('MouseFavicon.ico')
 
 logo_image = tk.PhotoImage(file='MouseJigglerLogo.png')
-resized_logo_image = logo_image.subsample(2, 2)  # resize the image
+resized_logo_image = logo_image.subsample(2, 2)
 logo_label = tk.Label(root, image=resized_logo_image)
-logo_label.pack()
+logo_label.grid(row=0, column=0, columnspan=2, pady=10)
 
-duration_label = tk.Label(root, text="Duration (minutes):")
-duration_label.pack()
+duration_frame = tk.Frame(root)
+duration_frame.grid(row=1, column=0, padx=10, pady=10)
 
-duration_entry = tk.Entry(root)
-duration_entry.pack()
-duration_entry.bind('<Return>', start_jiggler)  # bind Enter key to start_jiggler function
+duration_label = tk.Label(duration_frame, text="Duration (minutes):")
+duration_label.pack(side=tk.LEFT)
 
-jiggle_direction_label = tk.Label(root, text="Enter the X and Y distances for the mouse to move:")
+duration_entry = tk.Entry(duration_frame)
+duration_entry.pack(side=tk.LEFT)
+duration_entry.bind('<Return>', start_jiggler)
+
+direction_frame = tk.Frame(root)
+direction_frame.grid(row=2, column=0, padx=10, pady=10)
+
+jiggle_direction_label = tk.Label(direction_frame, text="Enter the X and Y distances for the mouse to move:")
 jiggle_direction_label.pack()
 
-x_distance_label = tk.Label(root, text="X Distance:")
+x_distance_label = tk.Label(direction_frame, text="X Distance:")
 x_distance_label.pack()
 
-x_distance_entry = tk.Entry(root)
-x_distance_entry.insert(0, "1")  # set default value to 1
+x_distance_entry = tk.Entry(direction_frame)
+x_distance_entry.insert(0, "1")
 x_distance_entry.pack()
-x_distance_entry.bind('<Return>', start_jiggler)  # bind Enter key to start_jiggler function
+x_distance_entry.bind('<Return>', start_jiggler)
 
-y_distance_label = tk.Label(root, text="Y Distance:")
+y_distance_label = tk.Label(direction_frame, text="Y Distance:")
 y_distance_label.pack()
 
-y_distance_entry = tk.Entry(root)
-y_distance_entry.insert(0, "1")  # set default value to 1
+y_distance_entry = tk.Entry(direction_frame)
+y_distance_entry.insert(0, "1")
 y_distance_entry.pack()
-y_distance_entry.bind('<Return>', start_jiggler)  # bind Enter key to start_jiggler function
+y_distance_entry.bind('<Return>', start_jiggler)
 
-start_button = tk.Button(root, text="Start", command=start_jiggler)
-start_button.pack()
+clicks_frame = tk.Frame(root)
+clicks_frame.grid(row=3, column=0, padx=10, pady=10)
 
-stop_button = tk.Button(root, text="Stop", command=stop_jiggler)
-stop_button.pack()
+clicks_label = tk.Label(clicks_frame, text="Clicks per minute:")
+clicks_label.pack(side=tk.LEFT)
+
+clicks_entry = tk.Entry(clicks_frame)
+clicks_entry.pack(side=tk.LEFT)
+clicks_entry.bind('<Return>', start_jiggler)
+
+button_frame = tk.Frame(root)
+button_frame.grid(row=4, column=0, padx=10, pady=10)
+
+start_button = tk.Button(button_frame, text="Start", command=start_jiggler)
+start_button.pack(side=tk.LEFT, padx=5)
+
+stop_button = tk.Button(button_frame, text="Stop", command=stop_jiggler)
+stop_button.pack(side=tk.LEFT, padx=5)
+
+click_button = tk.Button(button_frame, text="Clicker Off", command=toggle_click)
+click_button.pack(side=tk.LEFT, padx=5)
+
+pause_button = tk.Button(button_frame, text="Pause", command=toggle_pause)
+pause_button.pack(side=tk.LEFT, padx=5)
 
 error_label = tk.Label(root, text="")
-error_label.pack()
+error_label.grid(row=5, column=0, padx=10, pady=10)
 
-progress_var = tk.IntVar()  # create a variable to store the progress
+progress_var = tk.IntVar()
 progress_bar = ttk.Progressbar(root, length=200, mode='determinate', variable=progress_var)
-progress_bar.pack()
+progress_bar.grid(row=6, column=0, padx=10, pady=10)
 
-root.after(1000, update_progress)  # start updating the progress bar
+root.after(1000, update_progress)
 root.mainloop()
