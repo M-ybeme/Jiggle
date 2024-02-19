@@ -31,6 +31,7 @@ class Jiggler:
         start_time = time.time()
         click_interval = 60 / clicks_per_minute  
         last_click_time = time.time()
+        last_movement_time = time.time()  # Add a timestamp for the last mouse movement
         while (time.time() - start_time) < duration and self.running: 
             if not self.paused:  
                 pyautogui.move(x_distance, y_distance)
@@ -45,15 +46,18 @@ class Jiggler:
             self.elapsed_time = time.time() - start_time  
             current_position = pyautogui.position()  
             if current_position != self.last_position:  
-                time.sleep(5)
+                self.clicking = False  # Pause clicking when the mouse is moved
+                last_movement_time = time.time()  # Update the timestamp for the last mouse movement
                 self.last_position = current_position  
-        root.after(0, self.stop_jiggle)  
+            elif time.time() - last_movement_time >= 5:  # If it's been 5 seconds since the last movement
+                self.clicking = True  # Resume clicking
+        root.after(0, self.stop_jiggle)
 
-    def stop_jiggle(self):  
-        self.running = False
-        logo_label.config(image=resized_logo_image)
-        logo_label.image = resized_logo_image
-        progress_var.set(0)
+def stop_jiggle(self):  
+    self.running = False
+    logo_label.config(image=resized_logo_image)
+    logo_label.image = resized_logo_image
+    progress_var.set(0)
 
 def update_progress():  
     if jiggler.running and not jiggler.paused:
@@ -138,6 +142,7 @@ clicks_label = tk.Label(clicks_frame, text="Clicks per minute:")
 clicks_label.pack(side=tk.LEFT)
 
 clicks_entry = tk.Entry(clicks_frame)
+clicks_entry.insert(0, "1")
 clicks_entry.pack(side=tk.LEFT)
 clicks_entry.bind('<Return>', start_jiggler)
 
