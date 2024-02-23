@@ -53,11 +53,11 @@ class Jiggler:
                 self.clicking = True  # Resume clicking
         root.after(0, self.stop_jiggle)
 
-def stop_jiggle(self):  
-    self.running = False
-    logo_label.config(image=resized_logo_image)
-    logo_label.image = resized_logo_image
-    progress_var.set(0)
+    def stop_jiggle(self):  
+        self.running = False
+        logo_label.config(image=resized_logo_image)
+        logo_label.image = resized_logo_image
+        progress_var.set(0)
 
 def update_progress():  
     if jiggler.running and not jiggler.paused:
