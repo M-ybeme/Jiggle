@@ -66,6 +66,7 @@ class Jiggler:
     # Stop the jiggler and reset the logo and progress bar
     def stop_jiggle(self):  
         self.running = False
+        self.elapsed_time = 0
         logo_label.config(image=resized_logo_image)
         logo_label.image = resized_logo_image
         progress_var.set(0)
@@ -152,9 +153,9 @@ clicks_entry.pack(side=tk.LEFT)
 clicks_entry.bind('<Return>', start_jiggler)
 button_frame = tk.Frame(root)
 button_frame.grid(row=4, column=0, padx=10, pady=10)
-start_button = tk.Button(button_frame, text="Start", command=start_jiggler)
+start_button = tk.Button(button_frame, text="Start", command=start_jiggler, bg='green', fg='white')
 start_button.pack(side=tk.LEFT, padx=5)
-stop_button = tk.Button(button_frame, text="Stop", command=stop_jiggler)
+stop_button = tk.Button(button_frame, text="Stop", command=stop_jiggler, bg='red', fg='white')
 stop_button.pack(side=tk.LEFT, padx=5)
 click_button = tk.Button(button_frame, text="Clicker Off", command=toggle_click)
 click_button.pack(side=tk.LEFT, padx=5)
