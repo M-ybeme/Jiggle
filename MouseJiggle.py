@@ -64,9 +64,9 @@ class Jiggler:
 def update_progress():
     if jiggler.running and not jiggler.paused:
         progress_var.set(int((jiggler.elapsed_time / jiggler.duration) * 100))
-        total_time = time.strftime('%H:%M', time.gmtime(jiggler.duration))
+        total_time = int(jiggler.duration / 3600)  # Calculate hours
         remaining_time = time.strftime('%M:%S', time.gmtime(jiggler.duration - jiggler.elapsed_time))
-        total_time_label.config(text=f"Total Time: {total_time}")
+        total_time_label.config(text=f"Total Time: {total_time} hour(s)")  # Display hours
         remaining_time_label.config(text=f"Remaining Time: {remaining_time}")
     root.after(1000, update_progress)
 
@@ -159,7 +159,7 @@ progress_bar.grid(row=8, column=0, padx=10, pady=10)
 
 time_labels_frame = tk.Frame(root)
 time_labels_frame.grid(row=6, column=0, padx=10, pady=5)
-total_time_label = tk.Label(time_labels_frame, text="Total Time: 00:00")
+total_time_label = tk.Label(time_labels_frame, text="Total Time: 0 hour(s)")
 total_time_label.pack(side=tk.LEFT, padx=10)
 remaining_time_label = tk.Label(time_labels_frame, text="Remaining Time: 00:00")
 remaining_time_label.pack(side=tk.LEFT, padx=10)
