@@ -1,3 +1,12 @@
 {
-  "cSpell.words": ["columnspan", "Initailaize", "Jiggler", "padx", "pady"]
+  "cSpell.words": [
+    "columnspan",
+    "gmtime",
+    "Initailaize",
+    "Jiggler",
+    "MEIPASS",
+    "padx",
+    "pady",
+    "pyautogui"
+  ]
 }

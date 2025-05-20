@@ -1,3 +1,17 @@
+import sys
+import os
+# Check if the script is running in a virtual environment
+
+def resource_path(relative_path):
+    """ Get the absolute path to the resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
 import pyautogui
 import time
 import tkinter as tk
@@ -25,7 +39,7 @@ class Jiggler:
     def start_jiggle(self, duration, x_distance, y_distance, clicks_per_minute):
         self.running = True
         self.duration = duration
-        logo_image_running = tk.PhotoImage(file='MouseJigglerLogo2.png')
+        logo_image_running = tk.PhotoImage(file=resource_path('MouseJigglerLogo2.png'))
         resized_logo_image_running = logo_image_running.subsample(2, 2)
         logo_label.config(image=resized_logo_image_running)
         logo_label.image = resized_logo_image_running
@@ -63,12 +77,26 @@ class Jiggler:
 
 def update_progress():
     if jiggler.running and not jiggler.paused:
-        progress_var.set(int((jiggler.elapsed_time / jiggler.duration) * 100))
-        total_time = int(jiggler.duration / 3600)  # Calculate hours
-        remaining_time = time.strftime('%M:%S', time.gmtime(jiggler.duration - jiggler.elapsed_time))
-        total_time_label.config(text=f"Total Time: {total_time} hour(s)")  # Display hours
+        # Update progress bar
+        progress = int((jiggler.elapsed_time / jiggler.duration) * 100) if jiggler.duration > 0 else 0
+        progress_var.set(progress)
+
+        # Total time breakdown
+        total_seconds = int(jiggler.duration)
+        total_hours = total_seconds // 3600
+        total_minutes = (total_seconds % 3600) // 60
+        total_time_label.config(text=f"Total Time: {total_hours} hour(s) {total_minutes} minute(s)")
+
+        # Remaining time in h:mm:ss
+        remaining_seconds = int(jiggler.duration - jiggler.elapsed_time)
+        hours = remaining_seconds // 3600
+        minutes = (remaining_seconds % 3600) // 60
+        seconds = remaining_seconds % 60
+        remaining_time = f"{hours}:{minutes:02}:{seconds:02}"
         remaining_time_label.config(text=f"Remaining Time: {remaining_time}")
+
     root.after(1000, update_progress)
+
 
 def start_jiggler(event=None):
     try:
@@ -99,9 +127,9 @@ def toggle_pause():
 jiggler = Jiggler()
 root = tk.Tk()
 root.title("Mouse Jiggler")
-root.iconbitmap('MouseFavicon.ico')
+root.iconbitmap(resource_path('MouseFavicon.ico'))
 
-logo_image = tk.PhotoImage(file='MouseJigglerLogo.png')
+logo_image = tk.PhotoImage(file=resource_path('MouseJigglerLogo.png'))
 resized_logo_image = logo_image.subsample(2, 2)
 logo_label = tk.Label(root, image=resized_logo_image)
 logo_label.grid(row=0, column=0, columnspan=2, pady=10)
