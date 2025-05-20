@@ -1,43 +1,98 @@
-# Mouse Jiggler
+Mouse Jiggler
+Mouse Jiggler is a lightweight Windows utility that prevents your computer from going idle by gently moving the mouse cursor and optionally performing automatic clicks. It’s distributed as a standalone executable—no installation or admin privileges required.
 
-Mouse Jiggler is a Python application that jiggles your mouse cursor and performs clicks at a specified interval. This can be useful to prevent your computer from going to sleep or to automate repetitive clicking tasks.
+🔧 Features
+Custom mouse movement in X and Y directions
 
-## Features
+Optional auto-clicking at a user-defined rate (clicks per minute)
 
-- Jiggle mouse cursor at specified X and Y distances.
-- Perform clicks at a specified rate (clicks per minute).
-- Pause and resume jiggling and clicking.
-- Set the duration for the jiggling and clicking.
-- GUI for easy interaction.
+Adjustable session duration
 
-## Dependencies
+Pause/resume functionality during operation
 
-- Python 3
-- pyautogui
-- tkinter
+Real-time progress bar
 
-## Usage
+Remaining time displayed in H:MM:SS format
 
-1. Clone the repository.
-2. Install the dependencies: `pip install pyautogui tkinter`
-3. Run the script: `python MouseJiggle.py`
-4. Enter the desired parameters in the GUI and click "Start".
+Standalone GUI executable — no Python required
 
-## GUI
+📦 Folder Structure (Post-Build)
+After building or downloading:
 
-The GUI includes fields for:
+css
+Copy
+Edit
+MouseJiggler/
+├── dist/
+│   └── MouseJiggle.exe         ← The standalone executable to run
+├── MouseJigglerLogo.png        ← Bundled GUI logo (auto-loaded in .exe)
+├── MouseJigglerLogo2.png       ← Alternate running-state logo
+├── MouseFavicon.ico            ← Application window icon
+├── MouseJiggle.py              ← Source code (for developers)
+├── README.txt                  ← This file
+All assets are bundled inside MouseJiggle.exe using PyInstaller. Your friend only needs the .exe.
 
-- Duration (minutes): The duration for which the mouse should be jiggled.
-- X Distance: The distance in pixels the mouse should move along the X-axis.
-- Y Distance: The distance in pixels the mouse should move along the Y-axis.
-- Clicks per minute: The rate at which the mouse should click.
+🚀 Usage
+Run MouseJiggle.exe
 
-There are also buttons to start and stop the jiggling, toggle clicking, and pause/resume the jiggling.
+No install required.
 
-## Note
+No admin privileges needed.
 
-This script uses the pyautogui library to move the mouse and perform clicks. Please be aware that this could interfere with your normal computer usage while the script is running. Always use this script responsibly.
+You can place the .exe in any folder, such as Documents or AppData.
 
-## License
+Configure Settings in the GUI:
 
-This project is licensed under the MIT License.
+Duration (minutes) – how long the jiggling should last.
+
+X Distance / Y Distance – pixel movement amount.
+
+Clicks per Minute – optional click frequency.
+
+Use the Start, Stop, Pause, and Clicker On/Off buttons to control behavior.
+
+Progress Display
+
+Shows total session time and a live countdown timer.
+
+Time is displayed in H:MM:SS format.
+
+⚠ Notes
+Mouse movement and clicking is active during the session. Avoid using your mouse for other tasks unless paused.
+
+The app detects manual user mouse movement and temporarily disables auto-clicking to prevent interference.
+
+Built-in images and icons are auto-resolved at runtime and require no manual configuration.
+
+🔒 Security & Permissions
+This application:
+
+Does not require installation
+
+Does not write to registry or system folders
+
+Can be safely run from any user-writable directory
+
+Note: On some corporate laptops, antivirus software may flag unknown .exe files. If you encounter issues, try running from AppData or ask IT to whitelist it.
+
+🛠 For Developers
+Dependencies (if running from source):
+
+Python 3.10+
+
+pyautogui, tkinter
+
+Install:
+
+bash
+Copy
+Edit
+pip install pyautogui
+Run:
+
+bash
+Copy
+Edit
+python MouseJiggle.py
+📄 License
+This project is licensed under the MIT License. See LICENSE file if included.
