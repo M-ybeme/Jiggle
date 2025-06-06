@@ -12,10 +12,10 @@ Mouse Jiggler is a simple tool that moves your mouse and optionally clicks to pr
 * Easy-to-use graphical interface (GUI)
 
 <h3>Idle vs Running</h3>
-<p float="left">
-  <img src="idlejiggleimg.png" width="45%" alt="Idle State" />
-  <img src="mousejigglerunningimg.png" width="45%" alt="Running State" />
-</p>
+<div style="display: flex; justify-content: space-between; align-items: center;">
+  <img src="idlejiggleimg.png" alt="Idle State" width="670px">
+  <img src="mousejigglerunningimg.png" alt="Running State" width="670px"/>
+</div>
 
 ## How to Use (Windows)
 
