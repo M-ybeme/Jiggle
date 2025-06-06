@@ -11,6 +11,12 @@ Mouse Jiggler is a simple tool that moves your mouse and optionally clicks to pr
 * Shows remaining time in hours\:minutes\:seconds
 * Easy-to-use graphical interface (GUI)
 
+<h3>Idle vs Running</h3>
+<p float="left">
+  <img src="idlejiggleimg.png" width="45%" alt="Idle State" />
+  <img src="mousejigglerrunningimg.png" width="45%" alt="Running State" />
+</p>
+
 ## How to Use (Windows)
 
 1. Run `MouseJiggle.exe` from the `dist` folder.
