@@ -1,106 +1,87 @@
-Mouse Jiggler
+<h1>Mouse Jiggler</h1>
 
-Mouse Jiggler is a lightweight tool that simulates user activity by moving the mouse and optionally clicking. It's designed to prevent your system from going idle or locking due to inactivity. The app runs as a standalone .exe on Windows—no installation or admin rights required.
+<p><strong>Mouse Jiggler</strong> is a simple tool that prevents your system from going idle by gently moving the mouse—and optionally clicking—at configurable intervals. Built in Python, it runs as a standalone Windows .exe with no installation or admin rights required.</p>
 
-⚙️ Features
+<h2>Features</h2>
+<ul>
+  <li>Move the mouse cursor at configurable X and Y distances</li>
+  <li>Optional clicker with configurable clicks per minute</li>
+  <li>Set how long the app should run</li>
+  <li>Pause/Resume during operation</li>
+  <li>Shows remaining time and total time</li>
+  <li>System tray integration with Start/Stop/Open/Exit controls</li>
+  <li>Dark mode GUI using <code>ttkbootstrap</code></li>
+</ul>
 
-Custom X and Y movement distances
+<h2>How to Use (Windows)</h2>
+<ol>
+  <li>Run <code>MouseJiggle.exe</code> from the <code>dist/</code> folder.</li>
+  <li>Enter:
+    <ul>
+      <li>Run duration (in minutes)</li>
+      <li>Movement distances (X and Y)</li>
+      <li>Clicks per minute (optional)</li>
+      <li>Start and end time window</li>
+    </ul>
+  </li>
+  <li>Click <strong>Start</strong> to begin.</li>
+  <li>Use the buttons to Pause, Resume, Stop, or toggle the clicker.</li>
+</ol>
 
-Optional clicking at a specified rate (clicks per minute)
+<h2>System Tray Options</h2>
+<ul>
+  <li><strong>Open App</strong> — Reveal the main window</li>
+  <li><strong>Start (1 Hour)</strong> — Instantly begin a default 1-hour jiggle session</li>
+  <li><strong>Pause/Resume</strong> — Temporarily suspend/resume activity</li>
+  <li><strong>Stop</strong> — End current session</li>
+  <li><strong>Quit</strong> — Fully close the app</li>
+</ul>
 
-Configurable runtime duration
-
-Pause and resume support
-
-Real-time countdown and progress bar
-
-Clean and simple graphical interface (built with ttkbootstrap)
-
-System tray integration with quick start and show/hide options
-
-Emergency stop via Ctrl + Shift + Esc
-
-🐱 How to Use (Windows)
-
-Run MouseJiggle.exe (found in the dist/ folder).
-
-Configure:
-
-Duration (in minutes)
-
-Start and end times (24-hour format)
-
-X and Y movement distances
-
-Click rate (optional)
-
-Click Start to begin.
-
-Use the buttons to Pause, Resume, Stop, or toggle Clicking On/Off.
-
-The app stays in the system tray and can be re-opened or auto-started for 1 hour from the tray menu.
-
-📁 File Structure
-
-MouseJiggler/
+<h2>File Structure</h2>
+<pre><code>MouseJiggler/
 ├── dist/
-│   └── MouseJiggle.exe         # Compiled Windows executable
-├── MouseJiggle.py              # Source code (for developers)
-├── MouseFavicon.ico            # Tray and app icon
-├── MouseJigglerLogo.png        # Default app logo
-├── MouseJigglerLogo2.png       # "Running" state logo
+│   └── MouseJiggle.exe         # Compiled .exe (Windows only)
+├── MouseJigglerLogo.png        # GUI image (idle)
+├── MouseJigglerLogo2.png       # GUI image (active)
+├── MouseFavicon.ico            # App/system tray icon
+├── MouseJiggle.py              # Python source code
 ├── README.md                   # This file
+</code></pre>
 
-📝 Notes
+<h2>Notes</h2>
+<ul>
+  <li>No installation required</li>
+  <li>No changes made to system settings</li>
+  <li>May be flagged by antivirus due to being unsigned</li>
+</ul>
 
-No installation required
+<h2>For Developers</h2>
 
-No system settings are changed
+<h3>Requirements</h3>
+<ul>
+  <li>Python 3.10+</li>
+  <li><code>pyautogui</code></li>
+  <li><code>ttkbootstrap</code></li>
+  <li><code>keyboard</code>, <code>Pillow</code>, <code>pystray</code></li>
+</ul>
 
-May be flagged by antivirus due to being unsigned (false positive)
+<h3>Install dependencies</h3>
+<pre><code>pip install pyautogui keyboard pillow pystray ttkbootstrap
+</code></pre>
 
-👨‍💻 For Developers
+<h3>Run from source</h3>
+<pre><code>python MouseJiggle.py
+</code></pre>
 
-Requirements
+<h3>Build .exe using PyInstaller</h3>
+<pre><code>pyinstaller --onefile --windowed --icon=MouseFavicon.ico ^
+--add-data "MouseFavicon.ico;." ^
+--add-data "MouseJigglerLogo.png;." ^
+--add-data "MouseJigglerLogo2.png;." ^
+MouseJiggle.py
+</code></pre>
 
-Python 3.10 or later
+<p><em>Note:</em> Use <code>;</code> on Windows and <code>:</code> on macOS/Linux for <code>--add-data</code>.</p>
 
-Dependencies:
-
-pyautogui
-
-ttkbootstrap
-
-pystray
-
-Pillow
-
-keyboard
-
-Install Dependencies
-
-pip install pyautogui ttkbootstrap pystray Pillow keyboard
-
-Run From Source
-
-python MouseJiggle.py
-
-📦 Building the App (Windows, PyInstaller)
-
-To package a .exe:
-
-pyinstaller --onefile --windowed --icon=MouseFavicon.ico ^
-  --add-data "MouseFavicon.ico;." ^
-  --add-data "MouseJigglerLogo.png;." ^
-  --add-data "MouseJigglerLogo2.png;." ^
-  MouseJiggle.py
-
-Note: If pyinstaller is not recognized, use the full path to the executable or update your PATH environment variable.
-
-🍎 macOS Support (Experimental)
-
-This app is designed for Windows, but you can try building a .app using py2app. Code signing and notarization are required to run unsigned apps on modern macOS.
-
-📜 License
-
-MIT License
+<h2>License</h2>
+<p>MIT License</p>
