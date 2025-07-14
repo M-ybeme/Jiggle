@@ -66,9 +66,16 @@ class Jiggler:
                 continue
 
             idle_seconds = get_idle_duration()
-            self.paused = idle_seconds < 10
-            pause_button.config(text="Resume" if self.paused else "Pause")
-
+            # Pause only if user has been active recently
+            if idle_seconds < 30:
+                if not self.paused:
+                    self.paused = True
+                    pause_button.config(text="Resume")
+            else:
+                if self.paused:
+                    self.paused = False
+                    pause_button.config(text="Pause")
+            
             if not self.paused:
                 pyautogui.move(x_distance, y_distance)
                 if self.clicking and time.time() - last_click_time >= click_interval:
