@@ -21,17 +21,6 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 
-def get_idle_duration():
-    class LASTINPUTINFO(ctypes.Structure):
-        _fields_ = [("cbSize", ctypes.c_uint), ("dwTime", ctypes.c_uint)]
-
-    last_input_info = LASTINPUTINFO()
-    last_input_info.cbSize = ctypes.sizeof(last_input_info)
-    ctypes.windll.user32.GetLastInputInfo(ctypes.byref(last_input_info))
-    millis = ctypes.windll.kernel32.GetTickCount() - last_input_info.dwTime
-    return millis / 1000.0
-
-
 class Jiggler:
     def __init__(self):
         self.running = False
@@ -65,17 +54,6 @@ class Jiggler:
                 time.sleep(5)
                 continue
 
-            idle_seconds = get_idle_duration()
-            # Pause only if user has been active recently
-            if idle_seconds < 30:
-                if not self.paused:
-                    self.paused = True
-                    pause_button.config(text="Resume")
-            else:
-                if self.paused:
-                    self.paused = False
-                    pause_button.config(text="Pause")
-            
             if not self.paused:
                 pyautogui.move(x_distance, y_distance)
                 if self.clicking and time.time() - last_click_time >= click_interval:
@@ -201,7 +179,6 @@ def listen_for_emergency_stop():
     keyboard.wait()
 
 
-# THEME TOGGLE (Optional if you want it)
 def toggle_theme():
     current = root.style.theme.name
     new_theme = "darkly" if current != "darkly" else "flatly"
